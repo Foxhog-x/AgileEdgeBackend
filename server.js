@@ -2,14 +2,14 @@ const express = require("express");
 const user_auth = require("./middleware/user_auth.js");
 const socket = require("socket.io");
 const app = express();
-const cors = require('cors')
+const cors = require("cors");
 
 const corsOptions = {
-  origin: "http://localhost:5173/",
+  origin: "http://localhost:5173",
   optionsSuccessStatus: 200,
-}
+};
 
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 const expressServer = app.listen(8000, () => {
   console.log("port is listening on 8000");
 });
