@@ -32,7 +32,7 @@ io.on("connection", (socket) => {
 app.use(express.json());
 app.use("/admin", require("./router/login/login.js"));
 app.use("/member", require("./router/login/memberLogin.js"));
-app.use(user_auth);
+// app.use(user_auth);
 app.use("/createadmin", require("./router/createAdmin/createadmin.js"));
 app.use("/addmember", require("./router/addmemeber/addmember.js"));
 app.use("/board/public", require("./router/board/publicBoard.js"));
