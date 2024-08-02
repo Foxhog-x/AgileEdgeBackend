@@ -36,3 +36,4 @@ app.use("/member", require("./router/login/memberLogin.js"));
 app.use("/createadmin", require("./router/createAdmin/createadmin.js"));
 app.use("/addmember", require("./router/addmemeber/addmember.js"));
 app.use("/projects", require("./router/board/projectBoard.js"));
+app.use("/column", require("./router/column/column.js"));
