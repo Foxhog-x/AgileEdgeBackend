@@ -1,16 +1,38 @@
 const mysql = require("mysql2/promise");
-
-const MoveColumns = async (req, res) => {
+const addColumn = async (req, res) => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "12345",
+    database: "agile",
+  });
+  try {
+    const { board_Id, columnName } = req.body;
+    if (!board_Id || !columnName) {
+      res.status(409).json({ message: "argument not found" });
+    } else {
+      await connection.execute("CALL AddColumnAtEnd(?, ?)", [
+        board_Id,
+        columnName,
+      ]);
+      res.status(201).json({ message: "Created Successfully" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "error occured" });
+  }
+};
+const moveColumns = async (req, res) => {
   // 12, 14
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "12345",
+    database: "agile",
+  });
   try {
     const { sourceColumn_Id, destinationColumn_Id, board_Id } = req.body;
 
-    const connection = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "12345",
-      database: "agile",
-    });
     if (!sourceColumn_Id || !destinationColumn_Id || !board_Id) {
       res.status(409).json({ error: " erro occur on passing field" });
     } else {
@@ -67,4 +89,52 @@ const MoveColumns = async (req, res) => {
   }
 };
 
-module.exports = { MoveColumns };
+const deleteColumn = async (req, res) => {
+  const { board_Id, columnId } = req.body;
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "12345",
+    database: "agile",
+  });
+
+  try {
+    await connection.execute("CALL RemoveColumn(?, ?)", [board_Id, columnId]);
+    res.status(200).json({ message: "Succssfully Deleted" });
+  } catch (error) {
+    console.log(error.message);
+
+    res.status(500).json({ error: "error occur in the backend" });
+  }
+};
+
+const editColumn = async (req, res) => {
+  const connection = await mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "12345",
+    database: "agile",
+  });
+  try {
+    const { column_Id, newColumnName } = req.body;
+
+    if (column_Id === null || newColumnName === null) {
+      res
+        .status(400)
+        .json({ error: "Parameters board_Id and columnId must be defined." });
+    } else {
+      await connection.query("CALL EditColumnName(?, ?)", [
+        column_Id,
+        newColumnName,
+      ]);
+      res.status(200).json({ message: "Succssfully Edited" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "error occur in the backend" });
+  } finally {
+    connection.end();
+  }
+};
+
+module.exports = { addColumn, moveColumns, deleteColumn, editColumn };
