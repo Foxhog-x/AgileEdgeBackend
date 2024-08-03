@@ -1,11 +1,8 @@
 const mysql = require("mysql2/promise");
+const getConnection = require("../db");
+
 const addColumn = async (req, res) => {
-  const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "12345",
-    database: "agile",
-  });
+  const connection = await getConnection();
   try {
     const { board_Id, columnName } = req.body;
     if (!board_Id || !columnName) {
@@ -24,12 +21,7 @@ const addColumn = async (req, res) => {
 };
 const moveColumns = async (req, res) => {
   // 12, 14
-  const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "12345",
-    database: "agile",
-  });
+  const connection = await getConnection();
   try {
     const { sourceColumn_Id, destinationColumn_Id, board_Id } = req.body;
 
@@ -91,12 +83,7 @@ const moveColumns = async (req, res) => {
 
 const deleteColumn = async (req, res) => {
   const { board_Id, columnId } = req.body;
-  const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "12345",
-    database: "agile",
-  });
+  const connection = await getConnection();
 
   try {
     await connection.execute("CALL RemoveColumn(?, ?)", [board_Id, columnId]);
@@ -108,33 +95,21 @@ const deleteColumn = async (req, res) => {
   }
 };
 
-const editColumn = async (req, res) => {
-  const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "12345",
-    database: "agile",
-  });
+const editColumnName = async (req, res) => {
+  const connection = await getConnection();
   try {
-    const { column_Id, newColumnName } = req.body;
-
-    if (column_Id === null || newColumnName === null) {
-      res
-        .status(400)
-        .json({ error: "Parameters board_Id and columnId must be defined." });
-    } else {
-      await connection.query("CALL EditColumnName(?, ?)", [
-        column_Id,
-        newColumnName,
-      ]);
-      res.status(200).json({ message: "Succssfully Edited" });
-    }
+    const { columnName, columnId } = req.body;
+    console.log(columnId, columnName);
+    await connection.execute("CALL EditColumnName(?, ?)", [
+      columnId,
+      columnName,
+    ]);
+    res.status(200).json({ message: "Successfully Edited" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "error occur in the backend" });
   } finally {
-    connection.end();
   }
 };
 
-module.exports = { addColumn, moveColumns, deleteColumn, editColumn };
+module.exports = { addColumn, moveColumns, deleteColumn, editColumnName };

@@ -1,11 +1,12 @@
-const mysql = require("mysql2");
-function getConnection() {
-  const connection = mysql.createConnection({
+const mysql = require("mysql2/promise");
+
+const getConnection = async () => {
+  return await mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "12345",
+    password: "",
     database: "agile",
   });
-  return connection;
-}
+};
+
 module.exports = getConnection;
