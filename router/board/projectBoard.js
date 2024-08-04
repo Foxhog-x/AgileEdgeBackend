@@ -3,10 +3,10 @@ const express = require("express");
 const router = express.Router();
 const projectController = require("../../controller/projectController");
 
-router.get("/getprojects", projectController.getAllProject);
-router.post("/createproject", projectController.createProject);
-router.delete("/deleteproject", projectController.deleteProject);
-router.put("/editname", projectController.editname);
-router.post("/fetchAllContents", projectController.getAllContents);
+router.get("/get-projects", projectController.getAllProject);
+router.post("/create-project", projectController.createProject);
+router.delete("/delete-project", projectController.deleteProject);
+router.put("/edit-name", projectController.editname);
+router.post("/fetch-all-contents", projectController.getAllContents);
 
 module.exports = router;
