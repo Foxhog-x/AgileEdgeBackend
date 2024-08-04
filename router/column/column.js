@@ -7,4 +7,5 @@ router.post("/move", columnController.moveColumns);
 router.delete("/delete", columnController.deleteColumn);
 router.post("/add", columnController.addColumn);
 router.put("/edit-title", columnController.editColumnName);
+
 module.exports = router;

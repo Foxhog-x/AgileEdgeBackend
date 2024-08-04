@@ -88,10 +88,41 @@ const moveCardInternal = async (req, res) => {
     connection.end();
   }
 };
+
+const assignMemeberToCard = async (req, res) => {
+  const { cardId, memberId } = req.body;
+  const connection = await getConnection();
+
+  try {
+    await connection.execute("CALL AssignAssigneeToCard(?, ?)", [
+      cardId,
+      memberId,
+    ]);
+    res.status(201).json({ message: " Assigned Successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error Occured in the backend" });
+  }
+};
+
+const dissociateMemberToCard = async (req, res) => {
+  const { assigneeId } = req.body;
+  const connection = await getConnection();
+  try {
+    await connection.execute("CALL DissociateMemberToCard(?)", [assigneeId]);
+    res.status(201).json({ message: " Dissociate Successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error Occured in the backend" });
+  }
+};
+
 module.exports = {
   createCard,
   deleteCard,
   editCardTitle,
   moveCardExternal,
   moveCardInternal,
+  assignMemeberToCard,
+  dissociateMemberToCard,
 };
