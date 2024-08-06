@@ -22,10 +22,46 @@ const io = socket(expressServer, {
   },
 });
 
+const namespaces = {}; // To store namespaces and their users
+
 io.on("connection", (socket) => {
-  socket.emit("nslist", { data: "hey its works" });
-  socket.on("message", (msg) => {
-    console.log(msg);
+  console.log("A user connected");
+
+  socket.on("join card", (data) => {
+    const { cardId, userName } = data;
+
+    // Create namespace if it doesn't exist
+    if (!namespaces[cardId]) {
+      namespaces[cardId] = io.of(`/card/${cardId}`);
+      namespaces[cardId].on("connection", (nsSocket) => {
+        console.log(`${userName} connected to /card/${cardId}`);
+
+        // Join the user to a room within the namespace
+        nsSocket.join(cardId);
+        nsSocket.to(cardId).emit("user joined", { userName: userName });
+
+        // Handle chat messages
+        nsSocket.on("chat message", (msg) => {
+          namespaces[cardId].to(cardId).emit("chat message", {
+            message: msg,
+            userName: userName,
+          });
+        });
+
+        // Handle user disconnection
+        nsSocket.on("disconnect", () => {
+          nsSocket.to(cardId).emit("user left", { userName: userName });
+          console.log(`${userName} disconnected from /card/${cardId}`);
+        });
+      });
+    }
+
+    // Connect the user to the namespace
+    socket.emit("connect to namespace", `/card/${cardId}`);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
   });
 });
 

@@ -26,7 +26,7 @@ const moveColumns = async (req, res) => {
     const { sourceColumn_Id, destinationColumn_Id, board_Id } = req.body;
 
     if (!sourceColumn_Id || !destinationColumn_Id || !board_Id) {
-      res.status(409).json({ error: " erro occur on passing field" });
+      res.status(409).json({ error: " error occur on passing field" });
     } else {
       const getingColposition = await connection.query(
         `SELECT col_position, board_Id From columns where column_id = ?`,
@@ -40,7 +40,7 @@ const moveColumns = async (req, res) => {
       );
 
       const destinationCol_Position = gettinColrestult[0][0].col_position;
-      console.log(sourceCol_Position, destinationCol_Position);
+
       if (sourceCol_Position > destinationCol_Position) {
         await connection.query(
           `UPDATE Columns

@@ -1,19 +1,16 @@
-const createComment = (req, res) => {
-  console.log(req.body);
-  res.json({ data: req.body });
+const getConnection = require("../db");
+const getComments = async (req, res) => {
+  const { cardId } = req.body;
+  const connection = await getConnection();
+  try {
+    const [result] = await connection.execute("CALL GetComments(?)", [cardId]);
+    res.status(200).json({ result: result });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error occured in the backend" });
+  } finally {
+    connection.end();
+  }
 };
 
-const deleteComment = (req, res) => {
-  console.log(req.body);
-  res.json({ data: req.body });
-};
-
-const updateComment = (req, res) => {
-  console.log(req.body);
-  res.json({ data: req.body });
-};
-
-const fetchComment = (req, res) => {
-  console.log(req.body);
-  res.json({ data: req.body });
-};
+module.exports = { getComments };

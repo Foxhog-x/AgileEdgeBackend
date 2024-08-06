@@ -1,50 +1,58 @@
-const db_con = require("../../db");
+const getConnection = require("../../db");
+require("dotenv/config");
 const passwordHelp = require("../../helpers/hashPasswordHelper");
 const jwt = require("jsonwebtoken");
-const privateKeyjwt = "wwpbr";
+const privateKeyjwt = process.env.JWT_PRIVATE_KEY;
 const login = async (req, res) => {
   const { email, password } = req.body;
+  const connection = await getConnection();
+  try {
+    connection.query(
+      `SELECT password From users WHERE email ="${email}"`,
+      async (error, results) => {
+        if (error) res.json({ sqlError: error });
+        if (results) {
+          const encryptedHashPassword = results[0]?.password;
 
-  db_con.query(
-    `SELECT password From users WHERE email ="${email}"`,
-    async (error, results) => {
-      if (error) res.json({ sqlError: error });
-      if (results) {
-        const encryptedHashPassword = results[0]?.password;
+          const compareResult = await passwordHelp.descriptHashPassword(
+            password,
+            encryptedHashPassword
+          );
 
-        const compareResult = await passwordHelp.descriptHashPassword(
-          password,
-          encryptedHashPassword
-        );
-
-        console.log(compareResult);
-        if (compareResult) {
-          const userObj = {
-            email,
-          };
-          try {
-            jwt.sign(
-              userObj,
-              privateKeyjwt,
-              { expiresIn: "360h" },
-              (error, token) => {
-                if (error) console.log(error);
-                res.json({
-                  success: true,
-                  message: "login successfull",
-                  token,
-                });
-              }
-            );
-          } catch (error) {
-            if (error) res.json({ error });
+          console.log(compareResult);
+          if (compareResult) {
+            const userObj = {
+              email,
+            };
+            try {
+              jwt.sign(
+                userObj,
+                privateKeyjwt,
+                { expiresIn: "360h" },
+                (error, token) => {
+                  if (error) console.log(error);
+                  res.json({
+                    success: true,
+                    message: "login successfull",
+                    token,
+                  });
+                }
+              );
+            } catch (error) {
+              if (error) res.json({ error });
+            }
+          } else {
+            res.json({ success: false, message: "login unsuccessfull" });
           }
-        } else {
-          res.json({ success: false, message: "login unsuccessfull" });
         }
       }
-    }
-  );
+    );
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "error occured in the backend" });
+  } finally {
+    connection.end();
+  }
 };
 
 const memberLogin = async (req, res) => {
@@ -84,6 +92,8 @@ const memberLogin = async (req, res) => {
     );
   } catch (error) {
     if (error) res.status(401);
+  } finally {
+    connection.end();
   }
 };
 
