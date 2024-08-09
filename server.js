@@ -3,7 +3,6 @@ const express = require("express");
 const socket = require("socket.io");
 const app = express();
 const cors = require("cors");
-const jwtVerify = require("./middleware/jwtVerfiy.js");
 const socketAuth = require("./middleware/socketAuth.js");
 
 const corsOptions = {
@@ -64,8 +63,7 @@ io.on("connection", (socket) => {
 });
 
 app.use(express.json());
-app.use("/member", require("./router/login/login.js"));
-app.use(jwtVerify);
+
 // app.get("/jwt", (req, res) => {
 //   res.json({ message: "success" });
 // });
@@ -76,3 +74,4 @@ app.use("/addmember", require("./router/addmemeber/addmember.js"));
 app.use("/projects", require("./router/board/projectBoard.js"));
 app.use("/columns", require("./router/column/column.js"));
 app.use("/cards", require("./router/card/card.js"));
+app.use("/cal", require("./router/meetings/meetings.js"));
