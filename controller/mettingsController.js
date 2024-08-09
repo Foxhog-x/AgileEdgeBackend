@@ -33,4 +33,18 @@ const createEvent = async (req, res) => {
     (await connection).end();
   }
 };
-module.exports = { getAll, createEvent };
+const deleteEvent = async (req, res) => {
+  const { id } = req.body;
+
+  const connection = await getConnection();
+  try {
+    await connection.execute("CALL DeleteEvent(?)", [id]);
+    res.status(200).json({ message: "Successfully Deleted" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error occured in the backend" });
+  } finally {
+    (await connection).end();
+  }
+};
+module.exports = { getAll, createEvent, deleteEvent };
