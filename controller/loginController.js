@@ -25,12 +25,15 @@ const createMember = async (req, res) => {
 };
 
 const memberLoign = async (req, res) => {
-  const { memberEmail, memberPassword } = req.body;
+  const { email, password } = req.body;
   const connection = await getConnection();
   try {
+    if (email === undefined || password === undefined) {
+      throw new Error("Email or password is undefined");
+    }
     const [result] = await connection.execute("CALL FindMemberEmail(?, ?)", [
-      memberEmail,
-      memberPassword,
+      email,
+      password,
     ]);
     if (result[0].length) {
       const token = await jwt.sign(result[0][0], privateKey);
