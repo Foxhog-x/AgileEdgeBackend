@@ -1,14 +1,9 @@
 const mysql = require("mysql2/promise");
+const getConnection = require("../db");
 
-const createProject = (req, res) => {
+const createProject = async (req, res) => {
+  const connection = await getConnection();
   async function executeCreateProject(projectName, projectDescription) {
-    const connection = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "12345",
-      database: "agile",
-    });
-
     try {
       await connection.execute("CALL CreateProject(?, ?, @lastProjectId)", [
         projectName,
@@ -54,12 +49,7 @@ const createProject = (req, res) => {
 };
 
 const getAllProject = async (req, res) => {
-  const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "12345",
-    database: "agile",
-  });
+  const connection = await getConnection();
 
   try {
     const [result] = await connection.execute("CALL GetAllProjects()");
@@ -75,12 +65,8 @@ const getAllProject = async (req, res) => {
 
 const deleteProject = async (req, res) => {
   const { project_Id } = req.body;
-  const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "12345",
-    database: "agile",
-  });
+  console.log(project_Id);
+  const connection = await getConnection();
   try {
     await connection.execute("CALL DeleteProject(?)", [project_Id]);
 
@@ -95,12 +81,7 @@ const deleteProject = async (req, res) => {
 
 const editname = async (req, res) => {
   const { project_Id, newProjectName } = req.body;
-  const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "12345",
-    database: "agile",
-  });
+  const connection = await getConnection();
   try {
     await connection.execute("CALL EditProjectName(?, ?)", [
       project_Id,
@@ -119,12 +100,7 @@ const editname = async (req, res) => {
 const getAllContents = async (req, res) => {
   const { project_Id } = req.body;
 
-  const connection = await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "12345",
-    database: "agile",
-  });
+  const connection = await getConnection();
 
   try {
     const [result] = await connection.execute("CALL GetBoardIdOfProject(?)", [
