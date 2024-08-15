@@ -3,28 +3,24 @@ const getConnection = require("../db");
 
 const addColumn = async (req, res) => {
   const connection = await getConnection();
+
   try {
-    const { board_Id, columnName } = req.body;
-    if (!board_Id || !columnName) {
-      res.status(409).json({ message: "argument not found" });
-    } else {
-      await connection.execute("CALL AddColumnAtEnd(?, ?)", [
-        board_Id,
-        columnName,
-      ]);
-      res.status(201).json({ message: "Created Successfully" });
-    }
+    const { boardId, columnName } = req.body;
+    await connection.execute("CALL AddColumnAtEnd(?, ?)", [
+      boardId,
+      columnName,
+    ]);
+    res.status(201).json({ message: "Created Successfully" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "error occured" });
   }
 };
 const moveColumns = async (req, res) => {
-  // 12, 14
+  const { sourceColumn_Id, destinationColumn_Id, board_Id } = req.body.data;
+
   const connection = await getConnection();
   try {
-    const { sourceColumn_Id, destinationColumn_Id, board_Id } = req.body;
-
     if (!sourceColumn_Id || !destinationColumn_Id || !board_Id) {
       res.status(409).json({ error: " error occur on passing field" });
     } else {

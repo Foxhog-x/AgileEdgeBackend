@@ -1,14 +1,13 @@
 const getConnection = require("../db");
 
 const createCard = async (req, res) => {
-  const { columnId, cardName, cardDescription, endDate, cardPriority } =
-    req.body;
+  const { columnId, cardName, endDate, cardPriority } = req.body.data;
+
   const connection = await getConnection();
   try {
-    await connection.execute("Call AddCardAtEnd(?,?,?,?,?)", [
+    await connection.execute("Call AddCardAtEnd(?,?,?,?)", [
       columnId,
       cardName,
-      cardDescription,
       endDate,
       cardPriority,
     ]);
@@ -54,13 +53,14 @@ const editCardTitle = async (req, res) => {
 };
 
 const moveCardExternal = async (req, res) => {
-  const { sourcecard_Id, destinationCard_Id, destinationColumn_ID } = req.body;
+  const { sourceCardId, destinationCardId, destinationColumn_Id } = req.body;
+
   const connection = await getConnection();
   try {
     await connection.execute("CALL MoveCardExternal(?, ?, ?)", [
-      sourcecard_Id,
-      destinationCard_Id,
-      destinationColumn_ID,
+      sourceCardId,
+      destinationCardId,
+      destinationColumn_Id,
     ]);
     res.status(200).json({ message: "Update Successfully" });
   } catch (error) {
@@ -117,6 +117,62 @@ const dissociateMemberToCard = async (req, res) => {
   }
 };
 
+const createSubTask = async (req, res) => {
+  console.log(req.body);
+  const { cardId, checked, description } = req.body.data;
+  const connection = await getConnection();
+  try {
+    await connection.execute("CALL AddSubTask(?, ?, ?)", [
+      cardId,
+      checked,
+      description,
+    ]);
+    res.status(201).json({ message: "successfully created" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "error occour" });
+  } finally {
+    connection.end();
+  }
+};
+const getSubTasks = async (req, res) => {
+  const connection = await getConnection();
+  try {
+    const [response] = await connection.execute("Call GetSubTasks()");
+    res.status(201).json({ result: response[0] });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "error occour" });
+  } finally {
+    connection.end();
+  }
+};
+
+const deleteSubTasks = async (req, res) => {
+  const { subtask_id } = req.query;
+
+  const connection = getConnection();
+  try {
+    (await connection).execute("Call DeleteSubTask(?)", [subtask_id]);
+    res.status(200).json({ message: " Deleted Successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "error is occured" });
+  }
+};
+
+const updateSubTaskChecked = async (req, res) => {
+  const { id } = req.body;
+  const connection = getConnection();
+  try {
+    (await connection).execute("CALL UpdateSubTaskChecked(?)", [id]);
+    res.status(200).json({ message: "Updated successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "error occured" });
+  }
+};
+
 module.exports = {
   createCard,
   deleteCard,
@@ -125,4 +181,8 @@ module.exports = {
   moveCardInternal,
   assignMemeberToCard,
   dissociateMemberToCard,
+  createSubTask,
+  getSubTasks,
+  deleteSubTasks,
+  updateSubTaskChecked,
 };

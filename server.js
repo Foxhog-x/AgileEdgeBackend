@@ -92,20 +92,34 @@ io.on("connection", (socket) => {
     const { member_name } = socket.user;
 
     if (!namespaces[cardId]) {
-      namespaces[cardId] = io.of(`/card/${cardId}`);
-      namespaces[cardId].on("connection", (nsSocket) => {
-        console.log(`${member_name} connected to /card/${cardId}`);
+      namespaces[cardId] = {
+        ns: io.of(`/card/${cardId}`),
+        connectedUsers: new Set(),
+      };
+      namespaces[cardId].ns.on("connection", (nsSocket) => {
+        if (namespaces[cardId].connectedUsers.has(member_name)) {
+          nsSocket.disconnect(true);
+          console.log(`${member_name} is already connected to /card/${cardId}`);
+          return;
+        }
 
+        console.log(`${member_name} connected to /card/${cardId}`);
+        namespaces[cardId].connectedUsers.add(member_name);
         nsSocket.join(cardId);
         nsSocket.to(cardId).emit("user joined", { userName: member_name });
 
         nsSocket.on("chat message", (msg) => {
           console.log(msg);
-          namespaces[cardId].to(cardId).emit("chat message", {
+          namespaces[cardId].ns.to(cardId).emit("chat message", {
             message: msg,
             userName: member_name,
             date: Date.now(),
           });
+        });
+        nsSocket.on("leave card", (data) => {
+          const { cardId } = data;
+          console.log(`${member_name} is leaving /card/${cardId}`);
+          nsSocket.to(cardId).emit("user left", { userName: member_name });
         });
 
         nsSocket.on("disconnect", () => {
@@ -115,10 +129,6 @@ io.on("connection", (socket) => {
       });
     }
     socket.emit("connect to namespace", `http://localhost:8000/card/${cardId}`);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected");
   });
 });
 
@@ -133,3 +143,4 @@ app.use("/projects", require("./router/board/projectBoard.js"));
 app.use("/columns", require("./router/column/column.js"));
 app.use("/cards", require("./router/card/card.js"));
 app.use("/cal", require("./router/meetings/meetings.js"));
+app.use("/sub-tasks", require("./router/card/subtask.js"));

@@ -98,23 +98,17 @@ const editname = async (req, res) => {
 };
 
 const getAllContents = async (req, res) => {
-  const { project_Id } = req.body;
+  const { boardId } = req.body;
 
   const connection = await getConnection();
 
   try {
-    const [result] = await connection.execute("CALL GetBoardIdOfProject(?)", [
-      project_Id,
-    ]);
-
-    const { board_id } = result[0][0];
-
     const [fetchAllContentsResult] = await connection.execute(
       "CALL FetchAllBoardDetails(?)",
-      [board_id]
+      [boardId]
     );
 
-    res.status(200).json({ result: fetchAllContentsResult });
+    res.status(200).json({ result: fetchAllContentsResult[0] });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "error from server Side" });
@@ -122,6 +116,7 @@ const getAllContents = async (req, res) => {
     connection.end();
   }
 };
+
 module.exports = {
   createProject,
   getAllProject,
