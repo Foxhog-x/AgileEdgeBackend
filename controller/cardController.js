@@ -1,15 +1,16 @@
 const getConnection = require("../db");
 
 const createCard = async (req, res) => {
-  const { columnId, cardName, endDate, cardPriority } = req.body.data;
-
+  const { columnId, cardName, endDate, cardPriority, startDate } =
+    req.body.data;
   const connection = await getConnection();
   try {
-    await connection.execute("Call AddCardAtEnd(?,?,?,?)", [
+    await connection.execute("Call AddCardAtEnd(?,?,?,?,?)", [
       columnId,
       cardName,
       endDate,
       cardPriority,
+      startDate,
     ]);
     res.status(201).json({ message: "Created Successfully" });
   } catch (error) {

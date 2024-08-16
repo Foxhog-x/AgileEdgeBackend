@@ -11,7 +11,6 @@ const jwtVerify = (req, res, next) => {
     }
     jwt.verify(token, privateKey, (err, user) => {
       if (err) return res.sendStatus(403);
-      console.log(user);
       req.user = user;
       next();
     });
