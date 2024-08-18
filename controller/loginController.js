@@ -38,7 +38,14 @@ const memberLoign = async (req, res) => {
     if (result[0].length) {
       const token = await jwt.sign(result[0][0], privateKey);
       if (token) {
-        res.status(200).json({ message: "login successfully", token: token });
+        try {
+          const [result] = await connection.execute("call getAllMembers()");
+          res
+            .status(200)
+            .json({ message: "login successfully", token: token, result });
+        } catch (error) {
+          console.log(error);
+        }
       } else {
         res.status(500).json({ message: "error with signing" });
       }

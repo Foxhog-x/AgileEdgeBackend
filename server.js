@@ -142,5 +142,6 @@ app.use("/fetch-online", require("./router/onlineuser/online.js"));
 app.use("/projects", require("./router/board/projectBoard.js"));
 app.use("/columns", require("./router/column/column.js"));
 app.use("/cards", require("./router/card/card.js"));
+app.use("/assign", require("./router/assignee/assignee.js"));
 app.use("/cal", require("./router/meetings/meetings.js"));
 app.use("/sub-tasks", require("./router/card/subtask.js"));
