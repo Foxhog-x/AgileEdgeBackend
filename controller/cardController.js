@@ -1,17 +1,36 @@
+const { promise } = require("bcrypt/promises");
 const getConnection = require("../db");
 
 const createCard = async (req, res) => {
-  const { columnId, cardName, endDate, cardPriority, startDate } =
-    req.body.data;
+  const {
+    columnId,
+    cardName,
+    endDate,
+    cardPriority,
+    startDate,
+    assigneeArray,
+  } = req.body.data;
   const connection = await getConnection();
+
   try {
-    await connection.execute("Call AddCardAtEnd(?,?,?,?,?)", [
+    const [result] = await connection.execute("Call AddCardAtEnd(?,?,?,?,?)", [
       columnId,
       cardName,
       endDate,
       cardPriority,
       startDate,
     ]);
+    const lastInsertedId = result[0][0].last_insert_id;
+
+    if (assigneeArray && assigneeArray.length > 0) {
+      const assigneeInsertPromises = assigneeArray.map(({ member_id }) =>
+        connection.execute(
+          "INSERT INTO assignees (card_id, member_id) VALUES (?, ?)",
+          [lastInsertedId, member_id]
+        )
+      );
+      await Promise.all(assigneeInsertPromises);
+    }
     res.status(201).json({ message: "Created Successfully" });
   } catch (error) {
     console.log(error);
