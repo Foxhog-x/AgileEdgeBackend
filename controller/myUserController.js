@@ -24,4 +24,19 @@ const updateProfile = async (req, res) => {
   }
 };
 
-module.exports = { updateProfile };
+const getProfile = async (req, res) => {
+  const { member_id } = req.user;
+  const connection = await getConnection();
+  try {
+    const [result] = await connection.query(
+      "SELECT avatar, first_name, last_name, address, email from members where member_id = ?",
+      [member_id]
+    );
+    res.status(200).json({ result: result, message: "fetch successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "error occured getting profile" });
+  }
+};
+
+module.exports = { updateProfile, getProfile };
