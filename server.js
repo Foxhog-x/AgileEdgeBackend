@@ -145,3 +145,4 @@ app.use("/cards", require("./router/card/card.js"));
 app.use("/assign", require("./router/assignee/assignee.js"));
 app.use("/cal", require("./router/meetings/meetings.js"));
 app.use("/sub-tasks", require("./router/card/subtask.js"));
+app.use("/add-avatar", require("./router/avatar/avatar.js"));
