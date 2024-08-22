@@ -95,7 +95,6 @@ const editColumnName = async (req, res) => {
   const connection = await getConnection();
   try {
     const { columnName, columnId } = req.body;
-    console.log(columnId, columnName);
     await connection.execute("CALL EditColumnName(?, ?)", [
       columnId,
       columnName,

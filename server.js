@@ -16,7 +16,7 @@ app.use(cors(corsOptions));
 const expressServer = app.listen(8000, () => {
   console.log("port is listening on 8000");
 });
-app.use(express.json());
+app.use(express.json({ limit: "3mb" }));
 const io = socket(expressServer, {
   cors: {
     origin: "*",
@@ -32,7 +32,6 @@ io.use(socketAuth);
 
 io.of("/homepage", async (homeSocket) => {
   homeSocket.on("userLogin", async () => {
-    console.log(homeSocket.user.member_name, "is connected");
     const userId = homeSocket.user.member_id;
     const connection = await getConnection();
     try {
@@ -145,4 +144,5 @@ app.use("/cards", require("./router/card/card.js"));
 app.use("/assign", require("./router/assignee/assignee.js"));
 app.use("/cal", require("./router/meetings/meetings.js"));
 app.use("/sub-tasks", require("./router/card/subtask.js"));
-app.use("/add-avatar", require("./router/avatar/avatar.js"));
+app.use("/my", require("./router/userprofile/userProfile.js"));
+app.use("/avatar", require("./router/avatar/avatar.js"));

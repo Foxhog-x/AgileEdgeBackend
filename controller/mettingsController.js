@@ -35,7 +35,6 @@ const createEvent = async (req, res) => {
 };
 const deleteEvent = async (req, res) => {
   const { id } = req.body;
-  console.log(id);
   const connection = await getConnection();
   try {
     await connection.execute("CALL DeleteEvent(?)", [id]);

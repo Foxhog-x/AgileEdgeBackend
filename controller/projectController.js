@@ -65,7 +65,6 @@ const getAllProject = async (req, res) => {
 
 const deleteProject = async (req, res) => {
   const { project_Id } = req.body;
-  console.log(project_Id);
   const connection = await getConnection();
   try {
     await connection.execute("CALL DeleteProject(?)", [project_Id]);
