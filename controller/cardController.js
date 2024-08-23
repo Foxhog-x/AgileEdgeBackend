@@ -138,7 +138,6 @@ const dissociateMemberToCard = async (req, res) => {
 };
 
 const createSubTask = async (req, res) => {
-  console.log(req.body);
   const { cardId, checked, description } = req.body.data;
   const connection = await getConnection();
   try {

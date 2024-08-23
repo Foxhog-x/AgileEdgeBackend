@@ -45,7 +45,7 @@ io.of("/homepage", async (homeSocket) => {
 
     try {
       const [rows] = await connection.execute(
-        "select member_name, email, online_status from members where online_status = ?",
+        "select member_id, member_name, email, online_status from members where online_status = ?",
         ["yes"]
       );
 
@@ -71,7 +71,7 @@ io.of("/homepage", async (homeSocket) => {
 
     try {
       const [rows] = await connection.execute(
-        "select member_name, email, online_status from members where online_status = ?",
+        "select member_id, member_name, email, online_status from members where online_status = ?",
         ["yes"]
       );
 
@@ -146,3 +146,4 @@ app.use("/cal", require("./router/meetings/meetings.js"));
 app.use("/sub-tasks", require("./router/card/subtask.js"));
 app.use("/my", require("./router/userprofile/userProfile.js"));
 app.use("/avatar", require("./router/avatar/avatar.js"));
+app.use("/analytics", require("./router/analytic/analytic.js"));

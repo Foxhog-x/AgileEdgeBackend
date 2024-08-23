@@ -12,7 +12,7 @@ const fetchMembersAvatar = async (req, res) => {
 };
 const fetchUserAvatar = async (req, res) => {
   const { member_id } = req.user;
-  console.log(req.user);
+
   const connection = await getConnection();
   try {
     const [result] = await connection.query(

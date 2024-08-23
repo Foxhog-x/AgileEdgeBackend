@@ -37,7 +37,9 @@ const memberLoign = async (req, res) => {
     ]);
     if (result[0].length) {
       const token = await jwt.sign(result[0][0], privateKey);
+
       if (token) {
+        console.log(token);
         try {
           const [result] = await connection.execute("call getAllMembers()");
           res
