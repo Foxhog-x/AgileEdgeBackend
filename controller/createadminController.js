@@ -2,7 +2,6 @@ const db_con = require(".././db");
 const passwordHelp = require(".././helpers/hashPasswordHelper");
 const getConnection = require("../db");
 const createAdmin = async (req, res) => {
-  console.log("hello");
   const { email, password, username, organization, type } = req.body;
   const connection = getConnection();
   const resultPassword = await passwordHelp.createHashpassword(password);
