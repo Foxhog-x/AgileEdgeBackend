@@ -60,7 +60,7 @@ const moveColumns = async (req, res) => {
         );
 
         await connection.query(
-          `UPDATE Columns
+          `UPDATE columns
                              SET col_position = ?
                              WHERE board_id = ? AND column_id = ?`,
           [destinationCol_Position, board_Id, sourceColumn_Id]
