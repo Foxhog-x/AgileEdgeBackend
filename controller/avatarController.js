@@ -16,7 +16,7 @@ const fetchUserAvatar = async (req, res) => {
   const connection = await getConnection();
   try {
     const [result] = await connection.query(
-      "select member_id, avatar from members where member_id = ?",
+      "select member_id, avatar, member_name from members where member_id = ?",
       [member_id]
     );
 
