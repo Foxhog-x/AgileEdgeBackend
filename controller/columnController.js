@@ -39,21 +39,21 @@ const moveColumns = async (req, res) => {
 
       if (sourceCol_Position > destinationCol_Position) {
         await connection.query(
-          `UPDATE Columns
+          `UPDATE columns
                          SET col_position = col_position + 1
                          WHERE board_id = ? AND col_position BETWEEN ? AND ?`,
           [board_Id, destinationCol_Position, sourceCol_Position]
         );
 
         await connection.query(
-          `UPDATE Columns
+          `UPDATE columns
                          SET col_position = ?
                          WHERE board_id = ? AND column_id = ?`,
           [destinationCol_Position, board_Id, sourceColumn_Id]
         );
       } else {
         await connection.query(
-          `UPDATE Columns
+          `UPDATE columns
                              SET col_position = col_position - 1
                              WHERE board_id = ? AND col_position BETWEEN ? AND ?`,
           [board_Id, sourceCol_Position, destinationCol_Position]
