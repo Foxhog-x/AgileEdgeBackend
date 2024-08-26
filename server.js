@@ -24,6 +24,10 @@ const io = socket(expressServer, {
     Credential: true,
   },
 });
+
+app.get("/health", (req, res) => {
+  res.send("Server health is good");
+});
 app.use("/member", require("./router/login/login.js"));
 app.use(jwtVerify);
 const namespaces = {};
