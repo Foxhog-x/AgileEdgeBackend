@@ -10,6 +10,7 @@ const jwtVerify = require("./middleware/jwtVerfiy.js");
 const corsOptions = {
   origin: ["http://localhost:5173", "http://localhost:5174"],
   optionsSuccessStatus: 200,
+  credentials: true,
 };
 
 app.use(cors(corsOptions));
@@ -19,9 +20,9 @@ const expressServer = app.listen(8000, () => {
 app.use(express.json({ limit: "3mb" }));
 const io = socket(expressServer, {
   cors: {
-    origin: "*",
+    origin: ["http://localhost:5173", "http://localhost:5174"],
     methods: ["GET", "POST"],
-    Credential: true,
+    credentials: true,
   },
 });
 
@@ -88,52 +89,52 @@ io.of("/homepage", async (homeSocket) => {
   });
 });
 
-io.on("connection", (socket) => {
-  console.log("A user connected");
-  socket.on("join card", (data) => {
-    const { cardId } = data;
-    const { member_name } = socket.user;
+// io.on("connection", (socket) => {
+//   console.log("A user connected");
+//   socket.on("join card", (data) => {
+//     const { cardId } = data;
+//     const { member_name } = socket.user;
 
-    if (!namespaces[cardId]) {
-      namespaces[cardId] = {
-        ns: io.of(`/card/${cardId}`),
-        connectedUsers: new Set(),
-      };
-      namespaces[cardId].ns.on("connection", (nsSocket) => {
-        if (namespaces[cardId].connectedUsers.has(member_name)) {
-          nsSocket.disconnect(true);
-          console.log(`${member_name} is already connected to /card/${cardId}`);
-          return;
-        }
+//     if (!namespaces[cardId]) {
+//       namespaces[cardId] = {
+//         ns: io.of(`/card/${cardId}`),
+//         connectedUsers: new Set(),
+//       };
+//       namespaces[cardId].ns.on("connection", (nsSocket) => {
+//         if (namespaces[cardId].connectedUsers.has(member_name)) {
+//           nsSocket.disconnect(true);
+//           console.log(`${member_name} is already connected to /card/${cardId}`);
+//           return;
+//         }
 
-        console.log(`${member_name} connected to /card/${cardId}`);
-        namespaces[cardId].connectedUsers.add(member_name);
-        nsSocket.join(cardId);
-        nsSocket.to(cardId).emit("user joined", { userName: member_name });
+//         console.log(`${member_name} connected to /card/${cardId}`);
+//         namespaces[cardId].connectedUsers.add(member_name);
+//         nsSocket.join(cardId);
+//         nsSocket.to(cardId).emit("user joined", { userName: member_name });
 
-        nsSocket.on("chat message", (msg) => {
-          console.log(msg);
-          namespaces[cardId].ns.to(cardId).emit("chat message", {
-            message: msg,
-            userName: member_name,
-            date: Date.now(),
-          });
-        });
-        nsSocket.on("leave card", (data) => {
-          const { cardId } = data;
-          console.log(`${member_name} is leaving /card/${cardId}`);
-          nsSocket.to(cardId).emit("user left", { userName: member_name });
-        });
+//         nsSocket.on("chat message", (msg) => {
+//           console.log(msg);
+//           namespaces[cardId].ns.to(cardId).emit("chat message", {
+//             message: msg,
+//             userName: member_name,
+//             date: Date.now(),
+//           });
+//         });
+//         nsSocket.on("leave card", (data) => {
+//           const { cardId } = data;
+//           console.log(`${member_name} is leaving /card/${cardId}`);
+//           nsSocket.to(cardId).emit("user left", { userName: member_name });
+//         });
 
-        nsSocket.on("disconnect", () => {
-          nsSocket.to(cardId).emit("user left", { userName: member_name });
-          console.log(`${member_name} disconnected from /card/${cardId}`);
-        });
-      });
-    }
-    socket.emit("connect to namespace", `http://localhost:8000/card/${cardId}`);
-  });
-});
+//         nsSocket.on("disconnect", () => {
+//           nsSocket.to(cardId).emit("user left", { userName: member_name });
+//           console.log(`${member_name} disconnected from /card/${cardId}`);
+//         });
+//       });
+//     }
+//     socket.emit("connect to namespace", `http://localhost:8000/card/${cardId}`);
+//   });
+// });
 
 // app.get("/jwt", (req, res) => {
 //   res.json({ message: "success" });
