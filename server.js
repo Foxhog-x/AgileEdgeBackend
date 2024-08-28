@@ -35,12 +35,12 @@ app.get("/health", (req, res) => {
 app.use("/member", require("./router/login/login.js"));
 app.use(jwtVerify);
 const namespaces = {};
-io.of("/homepage").use(socketAuth);
-io.use(socketAuth);
+// io.of("/homepage").use(socketAuth);
+// io.use(socketAuth);
 
 io.of("/homepage", async (homeSocket) => {
   homeSocket.on("userLogin", async () => {
-    const userId = homeSocket.user.member_id;
+    const userId = homeSocket.socket.user.member_id;
     const connection = await getConnection();
     try {
       await connection.execute(
