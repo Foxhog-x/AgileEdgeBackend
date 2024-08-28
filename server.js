@@ -25,7 +25,6 @@ const io = socket(expressServer, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
-    credentials: true,
   },
 });
 
@@ -41,7 +40,7 @@ io.use(socketAuth);
 
 io.of("/homepage", async (homeSocket) => {
   homeSocket.on("userLogin", async () => {
-    const userId = homeSocket.socket.user.member_id;
+    const userId = homeSocket.user.member_id;
     const connection = await getConnection();
     try {
       await connection.execute(
