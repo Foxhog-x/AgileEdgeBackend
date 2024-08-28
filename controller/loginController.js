@@ -4,14 +4,17 @@ const jwt = require("jsonwebtoken");
 const privateKey = process.env.JWT_PRIVATE_KEY;
 
 const createMember = async (req, res) => {
-  const { memberName, email, memberPassword, roleType } = req.body;
+  const { firstName, lastName, memberName, email, password } = req.body;
+  const roleType = "regular"; //default regular set for the time being later we change
   const connection = await getConnection();
-
+  console.log(firstName, lastName, memberName, email, password);
   try {
-    await connection.execute("CALL CreateMember(?, ?, ?, ?)", [
+    await connection.execute("CALL CreateMember(?, ?, ?, ?, ?, ?)", [
+      firstName,
+      lastName,
       memberName,
       email,
-      memberPassword,
+      password,
       roleType,
     ]);
 
