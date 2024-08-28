@@ -10,10 +10,11 @@ const jwtVerify = require("./middleware/jwtVerfiy.js");
 const corsOptions = {
   origin: ["http://localhost:5173", "http://localhost:5174"],
   optionsSuccessStatus: 200,
+
   credentials: true,
 };
 
-app.use(cors(corsOptions));
+app.use("*", cors(corsOptions));
 const expressServer = app.listen(8000, () => {
   console.log("port is listening on 8000");
 });
@@ -23,6 +24,7 @@ const io = socket(expressServer, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   },
 });
