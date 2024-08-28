@@ -14,7 +14,7 @@ const corsOptions = {
   credentials: true,
 };
 
-app.use("*", cors(corsOptions));
+app.use(cors(corsOptions));
 const expressServer = app.listen(port, () => {
   console.log("port is listening on 8000");
 });
@@ -22,9 +22,8 @@ app.use(express.json({ limit: "3mb" }));
 
 const io = socket(expressServer, {
   cors: {
-    origin: "*",
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST"],
-    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   },
 });
