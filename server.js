@@ -6,7 +6,7 @@ const cors = require("cors");
 const socketAuth = require("./middleware/socketAuth.js");
 const getConnection = require("./db.js");
 const jwtVerify = require("./middleware/jwtVerfiy.js");
-
+const port = process.env.PORT || 8000;
 const corsOptions = {
   origin: ["http://localhost:5173", "http://localhost:5174"],
   optionsSuccessStatus: 200,
@@ -15,7 +15,7 @@ const corsOptions = {
 };
 
 app.use("*", cors(corsOptions));
-const expressServer = app.listen(8000, () => {
+const expressServer = app.listen(port, () => {
   console.log("port is listening on 8000");
 });
 app.use(express.json({ limit: "3mb" }));
@@ -35,8 +35,8 @@ app.get("/health", (req, res) => {
 app.use("/member", require("./router/login/login.js"));
 app.use(jwtVerify);
 const namespaces = {};
-// io.of("/homepage").use(socketAuth);
-// io.use(socketAuth);
+io.of("/homepage").use(socketAuth);
+io.use(socketAuth);
 
 io.of("/homepage", async (homeSocket) => {
   homeSocket.on("userLogin", async () => {
