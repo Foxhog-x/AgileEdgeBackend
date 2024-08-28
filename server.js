@@ -18,9 +18,10 @@ const expressServer = app.listen(8000, () => {
   console.log("port is listening on 8000");
 });
 app.use(express.json({ limit: "3mb" }));
+
 const io = socket(expressServer, {
   cors: {
-    origin: ["http://localhost:5173", "http://localhost:5174"],
+    origin: "*",
     methods: ["GET", "POST"],
     credentials: true,
   },
