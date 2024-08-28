@@ -10,19 +10,20 @@ const port = process.env.PORT || 8000;
 const corsOptions = {
   origin: ["http://localhost:5173", "http://localhost:5174"],
   optionsSuccessStatus: 200,
-
   credentials: true,
 };
 
 app.use(cors(corsOptions));
+
 const expressServer = app.listen(port, () => {
   console.log("port is listening on 8000");
 });
+
 app.use(express.json({ limit: "3mb" }));
 
 const io = socket(expressServer, {
   cors: {
-    origin: ["http://localhost:5173"],
+    origin: "*",
     methods: ["GET", "POST"],
     credentials: true,
   },
@@ -31,6 +32,7 @@ const io = socket(expressServer, {
 app.get("/health", (req, res) => {
   res.send("Server health is good");
 });
+
 app.use("/member", require("./router/login/login.js"));
 app.use(jwtVerify);
 const namespaces = {};
