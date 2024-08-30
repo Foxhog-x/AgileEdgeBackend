@@ -1,4 +1,5 @@
 const getConnection = require("../db");
+const transformEvents = require("../transformData/transformEvents");
 
 const getAll = async (req, res) => {
   const connection = await getConnection();
@@ -46,4 +47,20 @@ const deleteEvent = async (req, res) => {
     (await connection).end();
   }
 };
-module.exports = { getAll, createEvent, deleteEvent };
+
+const todaysEventList = async (req, res) => {
+  const connection = await getConnection();
+  try {
+    const [eventData] = await connection.execute("CALL GetTodayEvents()");
+    const data = eventData[0];
+    const result = transformEvents(data);
+
+    res.status(200).json({ result: result, message: "successfully fetched" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error occured in the backend" });
+  } finally {
+    (await connection).end();
+  }
+};
+module.exports = { getAll, createEvent, deleteEvent, todaysEventList };

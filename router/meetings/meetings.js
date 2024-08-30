@@ -4,5 +4,6 @@ const meetingsController = require("../../controller/mettingsController");
 router.get("/get", meetingsController.getAll);
 router.post("/create-event", meetingsController.createEvent);
 router.delete("/delete-event", meetingsController.deleteEvent);
+router.get("/today-events-list", meetingsController.todaysEventList);
 
 module.exports = router;
