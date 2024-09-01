@@ -155,3 +155,4 @@ app.use("/sub-tasks", require("./router/card/subtask.js"));
 app.use("/my", require("./router/userprofile/userProfile.js"));
 app.use("/avatar", require("./router/avatar/avatar.js"));
 app.use("/analytics", require("./router/analytic/analytic.js"));
+app.use("/ai", require("./router/ai/summary.js"));

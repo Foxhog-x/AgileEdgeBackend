@@ -17,7 +17,7 @@ const transformEvents = (data) => {
       return todayEvent;
     }
   });
-  console.log(tranformArray);
+
   return tranformArray;
 };
 
