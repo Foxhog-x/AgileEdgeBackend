@@ -45,6 +45,7 @@ const deleteCard = async (req, res) => {
   const connection = await getConnection();
   try {
     await connection.execute("CALL DeleteCard(?)", [card_Id]);
+
     res.status(201).json({ message: "Deleted Successfully" });
   } catch (error) {
     console.log(error);
@@ -82,6 +83,8 @@ const moveCardExternal = async (req, res) => {
       destinationCardId,
       destinationColumn_Id,
     ]);
+    await connection.execute("CALL UpdateCardCompleted()");
+    await connection.execute("CALL UpdateCardStatus()");
     res.status(200).json({ message: "Update Successfully" });
   } catch (error) {
     console.log(error);
@@ -154,6 +157,7 @@ const createSubTask = async (req, res) => {
     connection.end();
   }
 };
+
 const getSubTasks = async (req, res) => {
   const connection = await getConnection();
   try {
