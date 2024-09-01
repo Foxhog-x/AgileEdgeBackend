@@ -8,7 +8,7 @@ const getConnection = require("./db.js");
 const jwtVerify = require("./middleware/jwtVerfiy.js");
 const port = process.env.PORT || 8000;
 const corsOptions = {
-  origin: ["https://agile-edge-app.netlify.app"],
+  origin: ["https://agile-edge-app.netlify.app", "http://localhost:5173"],
   optionsSuccessStatus: 200,
   credentials: true,
 };
