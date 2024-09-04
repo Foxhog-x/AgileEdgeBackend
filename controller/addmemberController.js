@@ -2,7 +2,6 @@ const getConnection = require(".././db");
 const passwordHelp = require("../helpers/hashPasswordHelper");
 
 const addmember = async (req, res) => {
-  console.log(req.type);
   const connection = await getConnection();
   try {
     if (req.type === "regular") {

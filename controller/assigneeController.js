@@ -47,11 +47,11 @@ const addAssignee = async (req, res) => {
 };
 const removeAssignee = async (req, res) => {
   const obj = req.body;
-  console.log(obj);
+
   const { assigneeObj, cardId } = obj;
   const member_id = assigneeObj.member_id;
   const connection = await getConnection();
-  console.log(member_id);
+
   try {
     await connection.query(
       "DELETE FROM assignees WHERE (assignee_id = ? AND card_id = ?) OR (member_id = ? AND card_id = ?)",

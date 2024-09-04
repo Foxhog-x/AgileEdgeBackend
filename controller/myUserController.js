@@ -26,6 +26,7 @@ const updateProfile = async (req, res) => {
 
 const getProfile = async (req, res) => {
   const { member_id } = req.user;
+
   const connection = await getConnection();
   try {
     const [result] = await connection.query(

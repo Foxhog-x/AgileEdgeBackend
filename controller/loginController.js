@@ -5,7 +5,7 @@ const privateKey = process.env.JWT_PRIVATE_KEY;
 
 const createMember = async (req, res) => {
   const { firstName, lastName, memberName, email, password } = req.body;
-  const roleType = "regular"; //default regular set for the time being later we change
+  const roleType = "regular";
   const connection = await getConnection();
   console.log(firstName, lastName, memberName, email, password);
   try {

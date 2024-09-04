@@ -9,7 +9,8 @@ const getConnection = async () => {
     user: process.env.MYSQL_USER || "root",
     password: process.env.MYSQL_PASSWORD || "",
     database: process.env.MYSQL_DATABASE || "agile",
-    connectionLimit: 100,
+    waitForConnections: true,
+    connectionLimit: 200,
     connectTimeout: 10000,
   });
 
