@@ -47,7 +47,19 @@ const deleteEvent = async (req, res) => {
     (await connection).end();
   }
 };
-
+const updateEvent = async (req, res) => {
+  const { id, start, end } = req.body;
+  const connection = await getConnection();
+  try {
+    await connection.execute("CALL UpdateEvent(?, ?, ?)", [id, start, end]);
+    res.status(200).json({ message: "Successfully Updated" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Error occured in the backend" });
+  } finally {
+    (await connection).end();
+  }
+};
 const todaysEventList = async (req, res) => {
   const connection = await getConnection();
   try {
@@ -63,4 +75,10 @@ const todaysEventList = async (req, res) => {
     (await connection).end();
   }
 };
-module.exports = { getAll, createEvent, deleteEvent, todaysEventList };
+module.exports = {
+  getAll,
+  createEvent,
+  deleteEvent,
+  todaysEventList,
+  updateEvent,
+};
